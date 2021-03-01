@@ -1,0 +1,16 @@
+---
+title: "Rmarkdown转为markdown"
+author: "数分进阶"
+date: "3/1/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r pressure, echo=FALSE}
+knitr::knit(input = 'Learning_R_Chapter2.Rmd', output = 'Learning_R_Chapter2.md')
+```
+
