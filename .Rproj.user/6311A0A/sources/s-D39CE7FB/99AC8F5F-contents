@@ -1,0 +1,3 @@
+input_path <- './content/post/2021-02-14-r/Learning_R_Chapter2.Rmd’
+out_path <- './content/post/2021-02-14-r/Learning_R_Chapter2.md'
+knitr::knit(input = input_path, output = out_path)
