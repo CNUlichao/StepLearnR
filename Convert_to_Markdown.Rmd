@@ -11,6 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r pressure, echo=FALSE}
-knitr::knit(input = 'Learning_R_Chapter2.Rmd', output = 'Learning_R_Chapter2.md')
+knitr::knit(input = 'Learning_R_Chapter4.Rmd', output = 'Learning_R_Chapter4.md')
 ```
 
