@@ -2,9 +2,7 @@
 title: "学习R之列表和数据框"
 author: "数分进阶"
 date: "3/2/2021"
-output: 
-  html_document: 
-    df_print: default
+output: html_document
 ---
 
 ```{r setup, include = FALSE}
@@ -138,16 +136,12 @@ is.null(NA)
 可以通过给 row.names 传入一个向量来为每行命名，如果不指定的话，行号默认是从 1 开始递增的数字。
 
 ```{r}
-library(knitr)
-
 # 不指定行名称
-a_data_frame <- data.frame(
+(a_data_frame <- data.frame(
         x = letters[1:5],
         y = rnorm(5),
         z = runif(5) > 0.5
-)
-
-kable(a_data_frame)
+))
 
 # 指定行名称
 data.frame(

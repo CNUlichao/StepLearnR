@@ -2,9 +2,7 @@
 title: "学习R之列表和数据框"
 author: "数分进阶"
 date: "3/2/2021"
-output: 
-  html_document: 
-    df_print: default
+output: html_document
 ---
 
 
@@ -225,29 +223,12 @@ is.null(NA)
 
 
 ```r
-library(knitr)
-
 # 不指定行名称
-a_data_frame <- data.frame(
+(a_data_frame <- data.frame(
         x = letters[1:5],
         y = rnorm(5),
         z = runif(5) > 0.5
-)
-
-kable(a_data_frame)
-```
-
-
-
-|x  |          y|z     |
-|:--|----------:|:-----|
-|a  |  1.7254774|FALSE |
-|b  | -0.4829944|FALSE |
-|c  | -0.7312984|FALSE |
-|d  | -1.9300762|TRUE  |
-|e  |  0.5708548|FALSE |
-
-```r
+))
 
 # 指定行名称
 data.frame(

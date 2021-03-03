@@ -286,7 +286,7 @@ l[c(TRUE, TRUE, FALSE)]
 &gt;&gt; 
 &gt;&gt; $second
 &gt;&gt; [1] 2</code></pre>
-<p><br /> 以上索引操作的结果仍然是一个列表，但有时需要访问列表元素中的内容，可以使用双方括号 [[，或指定该元素的名称字符串来获取元素中的内容，对于列表中的命名元素，使用美元符号运算符 $ 与之等价。</p>
+<p><br /> 以上索引操作的结果仍然是一个列表，但有时需要访问列表元素中的内容，可以使用双方括号 [[ ]]， 或指定该元素的名称字符串来获取元素中的内容，对于列表中的命名元素，使用美元符号运算符 $ 与之等价。</p>
 <p>is.list 函数可以判断变量是否为列表，如果是列表将返回 TRUE，否则返回 FALSE。</p>
 <pre class="r"><code>l[[1]]
 &gt;&gt; [1] 1
@@ -376,12 +376,12 @@ is.null(NA)
         y = rnorm(5),
         z = runif(5) &gt; 0.5
 ))
-&gt;&gt;   x          y     z
-&gt;&gt; 1 a  0.7439600  TRUE
-&gt;&gt; 2 b  0.0107138  TRUE
-&gt;&gt; 3 c  2.5285299 FALSE
-&gt;&gt; 4 d -0.2014414  TRUE
-&gt;&gt; 5 e -0.1740025  TRUE
+&gt;&gt;   x           y     z
+&gt;&gt; 1 a -0.55491035  TRUE
+&gt;&gt; 2 b -0.49873077  TRUE
+&gt;&gt; 3 c  0.71456065  TRUE
+&gt;&gt; 4 d -0.01201503  TRUE
+&gt;&gt; 5 e -0.33923612 FALSE
 
 # 指定行名称
 data.frame(
@@ -391,11 +391,11 @@ data.frame(
        row.names = c(&quot;Jackie&quot;, &quot;Tito&quot;, &quot;Jermaine&quot;, &quot;Marlon&quot;, &quot;Michael&quot;)
 )
 &gt;&gt;          x          y     z
-&gt;&gt; Jackie   a -0.1927085 FALSE
-&gt;&gt; Tito     b  0.4522750 FALSE
-&gt;&gt; Jermaine c -2.0765642 FALSE
-&gt;&gt; Marlon   d -1.4974094  TRUE
-&gt;&gt; Michael  e -0.2927933 FALSE</code></pre>
+&gt;&gt; Jackie   a -0.7869658 FALSE
+&gt;&gt; Tito     b  1.3779004 FALSE
+&gt;&gt; Jermaine c  0.6656291  TRUE
+&gt;&gt; Marlon   d  0.1054912  TRUE
+&gt;&gt; Michael  e  1.0801238  TRUE</code></pre>
 <p><br /> 像矩阵一样，维度的名称可以使用 dimnames 来获取，同样地，也可以使用 rownames 和 colnames 分别获取或置行和列的名称。</p>
 <p>事实上，几乎所有用于矩阵的函数亦可用在数据框上，例如，nrow、ncol 和 dim 函数的使用也与矩阵一样。</p>
 <pre class="r"><code>dimnames(a_data_frame)
@@ -424,14 +424,14 @@ ncol(a_data_frame)
 <h4>2.2 数据框的索引</h4>
 <p>数据框的索引与矩阵的索引方式类似，可使用四种不同的向量索引 (正整数、负整数、逻辑值和字符)，如选择数据框中前两列的第二个和第三个元素：</p>
 <pre class="r"><code>a_data_frame[2:3, -3]
-&gt;&gt;   x         y
-&gt;&gt; 2 b 0.0107138
-&gt;&gt; 3 c 2.5285299
+&gt;&gt;   x          y
+&gt;&gt; 2 b -0.4987308
+&gt;&gt; 3 c  0.7145607
 
 a_data_frame[c(FALSE, TRUE, TRUE, FALSE, FALSE), c(&quot;x&quot;, &quot;y&quot;)]
-&gt;&gt;   x         y
-&gt;&gt; 2 b 0.0107138
-&gt;&gt; 3 c 2.5285299</code></pre>
+&gt;&gt;   x          y
+&gt;&gt; 2 b -0.4987308
+&gt;&gt; 3 c  0.7145607</code></pre>
 <p><br /> 如果只需选择一列，也可以使用列表样式的索引 (带有正整数或名称的双方括号，或者带有名称的美元符号运算符)，如选择第一列中的第二个和第三个元素：</p>
 <pre class="r"><code>a_data_frame$x[2:3]
 &gt;&gt; [1] b c
@@ -449,42 +449,36 @@ a_data_frame[[&#39;x&#39;]][2:3]
 <pre class="r"><code># 单个条件
 a_data_frame[ a_data_frame$y &gt; 0, c(&quot;x&quot;, &quot;y&quot;)]
 &gt;&gt;   x         y
-&gt;&gt; 1 a 0.7439600
-&gt;&gt; 2 b 0.0107138
-&gt;&gt; 3 c 2.5285299
+&gt;&gt; 3 c 0.7145607
 
 # 同时满足两个条件 &amp;
 a_data_frame[ a_data_frame$y &lt; 0 &amp; a_data_frame$x %in% c(&quot;b&quot;, &quot;c&quot;), c(&quot;x&quot;, &quot;y&quot;)]
-&gt;&gt; [1] x y
-&gt;&gt; &lt;0 rows&gt; (or 0-length row.names)
+&gt;&gt;   x          y
+&gt;&gt; 2 b -0.4987308
 
 # 至少满足一个条件 | 
 a_data_frame[ a_data_frame$y &gt; 0 | a_data_frame$z == TRUE, c(&quot;x&quot;, &quot;y&quot;, &quot;z&quot;)]
-&gt;&gt;   x          y     z
-&gt;&gt; 1 a  0.7439600  TRUE
-&gt;&gt; 2 b  0.0107138  TRUE
-&gt;&gt; 3 c  2.5285299 FALSE
-&gt;&gt; 4 d -0.2014414  TRUE
-&gt;&gt; 5 e -0.1740025  TRUE
+&gt;&gt;   x           y    z
+&gt;&gt; 1 a -0.55491035 TRUE
+&gt;&gt; 2 b -0.49873077 TRUE
+&gt;&gt; 3 c  0.71456065 TRUE
+&gt;&gt; 4 d -0.01201503 TRUE
 
 # 使用 subset 函数实现
 subset(a_data_frame, y &gt; 0, c(&quot;x&quot;, &quot;y&quot;))
 &gt;&gt;   x         y
-&gt;&gt; 1 a 0.7439600
-&gt;&gt; 2 b 0.0107138
-&gt;&gt; 3 c 2.5285299
+&gt;&gt; 3 c 0.7145607
 
 subset(a_data_frame, y &lt; 0 &amp; x %in% c(&quot;b&quot;, &quot;c&quot;), c(&quot;x&quot;, &quot;y&quot;))
-&gt;&gt; [1] x y
-&gt;&gt; &lt;0 rows&gt; (or 0-length row.names)
+&gt;&gt;   x          y
+&gt;&gt; 2 b -0.4987308
 
 subset(a_data_frame, y &gt; 0 | z == TRUE, c(&quot;x&quot;, &quot;y&quot;, &quot;z&quot;))
-&gt;&gt;   x          y     z
-&gt;&gt; 1 a  0.7439600  TRUE
-&gt;&gt; 2 b  0.0107138  TRUE
-&gt;&gt; 3 c  2.5285299 FALSE
-&gt;&gt; 4 d -0.2014414  TRUE
-&gt;&gt; 5 e -0.1740025  TRUE</code></pre>
+&gt;&gt;   x           y    z
+&gt;&gt; 1 a -0.55491035 TRUE
+&gt;&gt; 2 b -0.49873077 TRUE
+&gt;&gt; 3 c  0.71456065 TRUE
+&gt;&gt; 4 d -0.01201503 TRUE</code></pre>
 </div>
 <div id="数据框的基本操作" class="section level4">
 <h4>2.3 数据框的基本操作</h4>
@@ -497,26 +491,26 @@ subset(a_data_frame, y &gt; 0 | z == TRUE, c(&quot;x&quot;, &quot;y&quot;, &quot
 
 # 纵向合并
 rbind(a_data_frame, another_data_frame)
-&gt;&gt;    x          y         z
-&gt;&gt; 1  a  0.7439600 1.0000000
-&gt;&gt; 2  b  0.0107138 1.0000000
-&gt;&gt; 3  c  2.5285299 0.0000000
-&gt;&gt; 4  d -0.2014414 1.0000000
-&gt;&gt; 5  e -0.1740025 1.0000000
-&gt;&gt; 6  c  3.0000000 0.9375341
-&gt;&gt; 7  d  1.0000000 0.8568527
-&gt;&gt; 8  e  5.0000000 0.1503778
-&gt;&gt; 9  f  2.0000000 2.7888295
-&gt;&gt; 10 g  4.0000000 0.1744780
+&gt;&gt;    x           y         z
+&gt;&gt; 1  a -0.55491035 1.0000000
+&gt;&gt; 2  b -0.49873077 1.0000000
+&gt;&gt; 3  c  0.71456065 1.0000000
+&gt;&gt; 4  d -0.01201503 1.0000000
+&gt;&gt; 5  e -0.33923612 0.0000000
+&gt;&gt; 6  c  5.00000000 0.7193025
+&gt;&gt; 7  d  4.00000000 0.6850233
+&gt;&gt; 8  e  3.00000000 0.3708307
+&gt;&gt; 9  f  1.00000000 2.8386495
+&gt;&gt; 10 g  2.00000000 1.7468346
 
 # 横向合并
 cbind(a_data_frame, another_data_frame)
-&gt;&gt;   x          y     z         z y x
-&gt;&gt; 1 a  0.7439600  TRUE 0.9375341 3 c
-&gt;&gt; 2 b  0.0107138  TRUE 0.8568527 1 d
-&gt;&gt; 3 c  2.5285299 FALSE 0.1503778 5 e
-&gt;&gt; 4 d -0.2014414  TRUE 2.7888295 2 f
-&gt;&gt; 5 e -0.1740025  TRUE 0.1744780 4 g</code></pre>
+&gt;&gt;   x           y     z         z y x
+&gt;&gt; 1 a -0.55491035  TRUE 0.7193025 5 c
+&gt;&gt; 2 b -0.49873077  TRUE 0.6850233 4 d
+&gt;&gt; 3 c  0.71456065  TRUE 0.3708307 3 e
+&gt;&gt; 4 d -0.01201503  TRUE 2.8386495 1 f
+&gt;&gt; 5 e -0.33923612 FALSE 1.7468346 2 g</code></pre>
 <p><br /> 当两个数据框有相同的列时，可使用 merge 函数合并，连接时需要指定包含键值的列以作匹配。</p>
 <p>merge 函数支持以下四种类型的数据合并:</p>
 <ul>
@@ -527,39 +521,39 @@ cbind(a_data_frame, another_data_frame)
 </ul>
 <pre class="r"><code># 内连接
 merge(a_data_frame, another_data_frame, by = &quot;x&quot;)
-&gt;&gt;   x        y.x   z.x       z.y y.y
-&gt;&gt; 1 c  2.5285299 FALSE 0.9375341   3
-&gt;&gt; 2 d -0.2014414  TRUE 0.8568527   1
-&gt;&gt; 3 e -0.1740025  TRUE 0.1503778   5
+&gt;&gt;   x         y.x   z.x       z.y y.y
+&gt;&gt; 1 c  0.71456065  TRUE 0.7193025   5
+&gt;&gt; 2 d -0.01201503  TRUE 0.6850233   4
+&gt;&gt; 3 e -0.33923612 FALSE 0.3708307   3
 
 # 全连接
 merge(a_data_frame, another_data_frame, by = &quot;x&quot;, all = TRUE)
-&gt;&gt;   x        y.x   z.x       z.y y.y
-&gt;&gt; 1 a  0.7439600  TRUE        NA  NA
-&gt;&gt; 2 b  0.0107138  TRUE        NA  NA
-&gt;&gt; 3 c  2.5285299 FALSE 0.9375341   3
-&gt;&gt; 4 d -0.2014414  TRUE 0.8568527   1
-&gt;&gt; 5 e -0.1740025  TRUE 0.1503778   5
-&gt;&gt; 6 f         NA    NA 2.7888295   2
-&gt;&gt; 7 g         NA    NA 0.1744780   4
+&gt;&gt;   x         y.x   z.x       z.y y.y
+&gt;&gt; 1 a -0.55491035  TRUE        NA  NA
+&gt;&gt; 2 b -0.49873077  TRUE        NA  NA
+&gt;&gt; 3 c  0.71456065  TRUE 0.7193025   5
+&gt;&gt; 4 d -0.01201503  TRUE 0.6850233   4
+&gt;&gt; 5 e -0.33923612 FALSE 0.3708307   3
+&gt;&gt; 6 f          NA    NA 2.8386495   1
+&gt;&gt; 7 g          NA    NA 1.7468346   2
 
 # 左连接
 merge(a_data_frame, another_data_frame, by = &quot;x&quot;, all.x = TRUE)
-&gt;&gt;   x        y.x   z.x       z.y y.y
-&gt;&gt; 1 a  0.7439600  TRUE        NA  NA
-&gt;&gt; 2 b  0.0107138  TRUE        NA  NA
-&gt;&gt; 3 c  2.5285299 FALSE 0.9375341   3
-&gt;&gt; 4 d -0.2014414  TRUE 0.8568527   1
-&gt;&gt; 5 e -0.1740025  TRUE 0.1503778   5
+&gt;&gt;   x         y.x   z.x       z.y y.y
+&gt;&gt; 1 a -0.55491035  TRUE        NA  NA
+&gt;&gt; 2 b -0.49873077  TRUE        NA  NA
+&gt;&gt; 3 c  0.71456065  TRUE 0.7193025   5
+&gt;&gt; 4 d -0.01201503  TRUE 0.6850233   4
+&gt;&gt; 5 e -0.33923612 FALSE 0.3708307   3
 
 # 右连接
 merge(a_data_frame, another_data_frame, by = &quot;x&quot;, all.y = TRUE)
-&gt;&gt;   x        y.x   z.x       z.y y.y
-&gt;&gt; 1 c  2.5285299 FALSE 0.9375341   3
-&gt;&gt; 2 d -0.2014414  TRUE 0.8568527   1
-&gt;&gt; 3 e -0.1740025  TRUE 0.1503778   5
-&gt;&gt; 4 f         NA    NA 2.7888295   2
-&gt;&gt; 5 g         NA    NA 0.1744780   4</code></pre>
+&gt;&gt;   x         y.x   z.x       z.y y.y
+&gt;&gt; 1 c  0.71456065  TRUE 0.7193025   5
+&gt;&gt; 2 d -0.01201503  TRUE 0.6850233   4
+&gt;&gt; 3 e -0.33923612 FALSE 0.3708307   3
+&gt;&gt; 4 f          NA    NA 2.8386495   1
+&gt;&gt; 5 g          NA    NA 1.7468346   2</code></pre>
 <p><br /> 操作数据框是一个很大的话题，我们将在之后的章节中继续深入探讨。</p>
 </div>
 </div>
