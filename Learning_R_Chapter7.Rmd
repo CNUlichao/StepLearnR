@@ -1,0 +1,111 @@
+---
+title: "学习R之字符串和因子"
+author: "数分进阶"
+date: "3/3/2021"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = ">>", collapse = TRUE)
+```
+
+### 1. 字符串
+#### 1.1 创建和输出字符串
+如你所见，字符向量可用 c 函数创建。我们可以用单引号或双引号把字符串引用起来，只要引号之间匹配即可。不过，使用双引号更为标准：
+
+```{r}
+c("learn", "character", "and", "factor", "of", "r")
+```
+
+paste 函数能将不同字符串组合在起来。在它传入的参数向量中，每个元素都能自我循环以达到最长的矢量长度，然后字符串就被拼接在一起，中间以空格分开。
+
+可以使用参数 sep 更改分隔符，或使用相关的 paste0 函数去掉分隔符。所有的字符串被组合后，可使用 collapse 参数把结果收缩成一个包含所有元素的字符串:
+
+```{r}
+paste(c("red", "yellow"), "lorry")
+
+paste(c("red", "yellow"), "lorry", sep = "-")
+
+paste(c("red", "yellow"), "lorry", collapse = ", ")
+```
+
+toString 函数是 paste 的变种，它在打印向量时非常有用。它使用逗号和空格分隔每个元 素，且可限制打印的数量。在下例中，width = 40 将输出限制为 40 个字符：
+
+```{r}
+x <- (1:15) ^ 2
+toString(x)
+
+toString(x, width = 40)
+```
+
+#### 1.2 格式化数字
+有几个函数可用于数字的格式化。formatC 可让你使用 C 语言的格式化风格来指定使用固 定型或科学型的格式、小数的位数以及输出的宽度。
+
+无论使用哪种选项，输入都应该是 numeric 类型(包括数组)，且输出是 character 字符向量或数组:
+
+```{r}
+pow <- 1:3
+(powers_of_e <- exp(pow))
+
+formatC(powers_of_e)
+
+formatC(powers_of_e, digits = 3)
+
+formatC(powers_of_e, digits = 3, width = 10) 
+
+formatC(powers_of_e, digits = 3, format = "e")
+```
+
+<br />
+sprint 的第一个参数指定了一个格式化字符串，其中包括其他值的占位符。例如:%s 代 表另一个字符串，%f 和 %e 分别代表固定型格式和科学型格式的浮点数，%d 表示整数。其 他参数的值将替换占位符
+
+```{r}
+sprintf("%s %d = %f", "Euler's constant to the power", pow, powers_of_e)
+
+sprintf("To three decimal places, e ^ %d = %.3f", pow, powers_of_e)
+
+sprintf("In scientific notation, e ^ %d = %e", pow, powers_of_e)
+```
+
+#### 1.3 特殊字符
+
+
+#### 1.4 更改大小写
+使用 toupper 和 tolower 函数能把字符串中的字符全部转换为大写或小写：
+
+```{r}
+toupper("I'm Shouting")
+
+tolower("I'm Whispering")
+```
+
+#### 1.5 字符串操作
+substr(x, start, stop) 函数是截取字符串最常用的函数，可以用来截取子字符串或者替换子字符串，其中 start 表示起始的索引，stop 表示结束的索引。
+
+```{r}
+# 截取子字符串
+substr("his name is Jack", 2, 4)
+
+# 替换子字符串
+x <- "his name is Jack"
+substr(x, 13, 16) <- "John"
+x
+```
+
+<br />
+strsplit 可以用来分割字符串，返回的是一个列表。
+
+```{r}
+# 按空格分割字符串
+x <- "his name is Jack"
+strsplit(x, " ")
+```
+
+
+#### 1.6 文件路径
+
+
+### 2. 因子
+#### 2.1 创建因子
+
+#### 2.2 
