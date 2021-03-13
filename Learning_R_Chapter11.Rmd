@@ -1,0 +1,143 @@
+---
+title: "学习R之日期和时间"
+author: "数分进阶"
+date: "3/13/2021"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = ">>", collapse = TRUE)
+```
+
+### 1. 日期和时间类
+#### 1.1 POSIX 日期和时间
+
+R 中的两个标准的日期-时间类是 **POSIXct** 和 **POSIXlt**。
+
+**POSIXct** 类记录了以世界标准时 UTC 时区为准的从 1970 年开始计时的秒数计数，**POSIXlt** 则将日期存储为一个列表，其中包括秒、 分钟、小时和月份等。
+
+**POSIXct** 最适用于存储和计算时间，而 **POSIXlt** 最适用于提取日期中的某个特定部分。
+
+```{r}
+# 以 POSIXct 的形式返回当前的日期和时间
+(now_ct <- Sys.time())
+
+# POSIXct 的日期是通过数字存储的
+unclass(now_ct)
+
+# POSIXlt 日期看上和 POSIXct 一样，但底层存储机制非常不同
+(now_lt <- as.POSIXlt(now_ct))
+
+# POSIXlt 的日期是以列表形式存储的
+unclass(now_lt)
+```
+
+#### 1.2 Date
+Date 类存储了从 1970 年开始计算的天数，最适用于只关注日期而不关注具体时间的情况。
+
+```{r}
+(now_date <- as.Date(now_ct))
+```
+
+#### 1.3 日期和字符串的相互转化
+字符串转化为日期，可以使用 strptime 函数，对应的，日期变量转换为字符串，使用 strftime 函数。
+
+在进行转化时，%H 表示 24 小时制，%I 表示 12 小时制，%M 是分钟，%S 是秒，%d 是天数，%A 是星期的全称，%m 是月数，%B 是月份的全名，%Y 是四位数的年份。
+
+```{r}
+moon_landings_str <- c(
+    "20:17:40 20/07/1969",
+    "06:54:35 19/11/1969",
+    "09:18:11 05/02/1971",
+    "22:16:29 30/07/1971",
+    "02:23:35 21/04/1972",
+    "19:54:57 11/12/1972"
+)
+(moon_landings_lt <- strptime(moon_landings_str, "%H:%M:%S %d/%m/%Y", tz = "UTC"))
+
+strftime(now_ct, "It's %I:%M on %A %d %B, %Y.")
+```
+
+#### 1.4 时区
+很多国家常有好几个时区，而且当一些国家切换到夏令时需要改变边界。
+
+在使用 strptime 解析日期字符串时，可以指定一个时区；使用 strftime 格式化日期时，也可以再次改变它。
+
+在解析的过程中，如果不指定时区，R 会给日期以默认时区，这个值是 Sys.timezone 返回的一个值，取决于你的操作系统和具体的设置。
+
+```{r}
+strftime(now_ct, tz = "America/Los_Angeles")
+
+strftime(now_ct, tz = "Asia/Kolkata")
+```
+
+#### 1.5 日期和时间的运算
+R 支持三个日期与时间基类的算术运算：将数字与 POSIX 日期相加，会以秒为单位增加时间，将数字与 Date 相加会以天数为单位。
+
+```{r}
+# POSIXct 时间的加法
+now_ct + 86400
+
+# POSIXlt 时间的加法
+now_lt + 86400
+
+# Date 的加法
+now_date + 1 
+
+# 日期做差值
+the_start_of_time <- as.Date("2010-01-01")
+the_end_of_time <-as.Date("2021-01-01")
+(time_diff <- the_end_of_time - the_start_of_time)
+
+unclass(time_diff)
+```
+
+<br />
+使用 difftime 函数来计算出日期和时间之间的差值，默认以数字的形式存储并以天为单位，可以通过 units 参数指定单位。
+
+```{r}
+difftime(the_end_of_time, the_start_of_time, units = "secs")
+
+difftime(the_end_of_time, the_start_of_time, units = "weeks")
+```
+
+<br />
+生成序列的 seq 函数也适用于日期。
+
+```{r}
+seq(the_start_of_time, the_end_of_time, by = "1 year")
+
+seq(the_start_of_time, the_end_of_time, by = "6 months")
+```
+
+### 2. lubridate
+lubridate 是 R 中专门用来处理日期和的时间包，使用之前，需要通过 **install.packages("lubridate")** 命令先安装一下。
+
+lubridate 有多种使用了预设格式的解析函数，如 ymd 接受年、月、日的 日期形式，它最大的优点在于：相同向量中的不同元素可用不同的格式，只要年月日的先后顺序不变即可。
+
+```{r}
+# 不同格式的日期字符串，处理结果完全一致
+library(lubridate)
+john_harrison_birth_date <- c ("1693-03 24", "1693/03\\24", "Tuesday+1693.03*24")
+ymd(john_harrison_birth_date) 
+```
+
+<br />
+如果你的日期数据的形式有所不同，可以使用 lubridate 提供的其他函数 (ydm、mdy、myd、dmy 和 dym)，这些函数也都有相关的函数用于指定特定的时间格式，如 ymd_h、ymd_hm 和 ymd_hms 等。
+
+lubridate 主要有持续时间 Duartion、周期 Period 两种用来处理时间范围的类型。
+持续时间 Duration 指定的时间跨度为秒的倍数，所以一天的总时间是 86400 秒，其他用于创建持续时间的函数为 dseconds、dminutes 等。
+
+```{r}
+(duration_one_to_ten_years <- dyears(1:10))
+today() + duration_one_to_ten_years
+```
+
+<br />
+周期 Period 根据时钟上的时间来指定时间跨度，但确切的时间跨度实际上是不确定的，如一年的周期可以是 365 或 366 天，这取决于它是否是闰年。
+
+```{r}
+(period_one_to_ten_years <- years(1:10))
+today() + period_one_to_ten_years
+```
+
