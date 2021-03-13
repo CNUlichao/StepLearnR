@@ -199,20 +199,26 @@ summary {
 <h3>1. 字符串</h3>
 <div id="创建和输出字符串" class="section level4">
 <h4>1.1 创建和输出字符串</h4>
-<p>如你所见，字符向量可用 c 函数创建。我们可以用单引号或双引号把字符串引用起来，只要引号之间匹配即可。不过，使用双引号更为标准：</p>
+<p>字符向量可用 c 函数创建，可以用单引号或双引号把字符串引用起来，只要引号之间匹配即可，推荐使用双引号：</p>
 <pre class="r"><code>c(&quot;learn&quot;, &quot;character&quot;, &quot;and&quot;, &quot;factor&quot;, &quot;of&quot;, &quot;r&quot;)
 &gt;&gt; [1] &quot;learn&quot;     &quot;character&quot; &quot;and&quot;       &quot;factor&quot;    &quot;of&quot;        &quot;r&quot;</code></pre>
-<p>paste 函数能将不同字符串组合在起来。在它传入的参数向量中，每个元素都能自我循环以达到最长的矢量长度，然后字符串就被拼接在一起，中间以空格分开。</p>
-<p>可以使用参数 sep 更改分隔符，或使用相关的 paste0 函数去掉分隔符。所有的字符串被组合后，可使用 collapse 参数把结果收缩成一个包含所有元素的字符串:</p>
-<pre class="r"><code>paste(c(&quot;red&quot;, &quot;yellow&quot;), &quot;lorry&quot;)
+<p><br /> paste 函数能将不同字符串组合在一起，默认分隔符为空格，可以使用参数 sep 更改分隔符。</p>
+<p>所有的字符串被组合后，可使用 collapse 参数把结果收缩成一个包含所有元素的字符串。</p>
+<pre class="r"><code>paste(&quot;red&quot;, &quot;yellow&quot;)
+&gt;&gt; [1] &quot;red yellow&quot;
+
+paste(c(&quot;red&quot;, &quot;yellow&quot;), &quot;lorry&quot;)
 &gt;&gt; [1] &quot;red lorry&quot;    &quot;yellow lorry&quot;
 
 paste(c(&quot;red&quot;, &quot;yellow&quot;), &quot;lorry&quot;, sep = &quot;-&quot;)
 &gt;&gt; [1] &quot;red-lorry&quot;    &quot;yellow-lorry&quot;
 
-paste(c(&quot;red&quot;, &quot;yellow&quot;), &quot;lorry&quot;, collapse = &quot;, &quot;)
-&gt;&gt; [1] &quot;red lorry, yellow lorry&quot;</code></pre>
-<p>toString 函数是 paste 的变种，它在打印向量时非常有用。它使用逗号和空格分隔每个元 素，且可限制打印的数量。在下例中，width = 40 将输出限制为 40 个字符：</p>
+paste(&quot;a&quot;, 1:5, sep = &quot;&quot;)
+&gt;&gt; [1] &quot;a1&quot; &quot;a2&quot; &quot;a3&quot; &quot;a4&quot; &quot;a5&quot;
+
+paste(&quot;a&quot;, 1:5, sep = &quot;&quot;, collapse = &quot;+&quot;)
+&gt;&gt; [1] &quot;a1+a2+a3+a4+a5&quot;</code></pre>
+<p><br /> toString 函数是 paste 的变种，它在输出向量时，会使用逗号和空格分隔每个元素，同时可以限制输出的字符长度，如 width = 40 将输出 40 个字符：</p>
 <pre class="r"><code>x &lt;- (1:15) ^ 2
 toString(x)
 &gt;&gt; [1] &quot;1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225&quot;
@@ -222,44 +228,34 @@ toString(x, width = 40)
 </div>
 <div id="格式化数字" class="section level4">
 <h4>1.2 格式化数字</h4>
-<p>有几个函数可用于数字的格式化。formatC 可让你使用 C 语言的格式化风格来指定使用固 定型或科学型的格式、小数的位数以及输出的宽度。</p>
-<p>无论使用哪种选项，输入都应该是 numeric 类型(包括数组)，且输出是 character 字符向量或数组:</p>
+<p>format 函数可用于数字的格式化，包括指定小数的位数、输出的宽度、是否使用科学计数法等，传入的参数是数值型的向量，输出则是字符串向量：</p>
 <pre class="r"><code>pow &lt;- 1:3
 (powers_of_e &lt;- exp(pow))
 &gt;&gt; [1]  2.718282  7.389056 20.085537
 
-formatC(powers_of_e)
-&gt;&gt; [1] &quot;2.718&quot; &quot;7.389&quot; &quot;20.09&quot;
+format(powers_of_e)
+&gt;&gt; [1] &quot; 2.718282&quot; &quot; 7.389056&quot; &quot;20.085537&quot;
 
-formatC(powers_of_e, digits = 3)
-&gt;&gt; [1] &quot;2.72&quot; &quot;7.39&quot; &quot;20.1&quot;
+format(powers_of_e, digits = 3)
+&gt;&gt; [1] &quot; 2.72&quot; &quot; 7.39&quot; &quot;20.09&quot;
 
-formatC(powers_of_e, digits = 3, width = 10) 
-&gt;&gt; [1] &quot;      2.72&quot; &quot;      7.39&quot; &quot;      20.1&quot;
+format(powers_of_e, digits = 3, width = 10) 
+&gt;&gt; [1] &quot;      2.72&quot; &quot;      7.39&quot; &quot;     20.09&quot;
 
-formatC(powers_of_e, digits = 3, format = &quot;e&quot;)
-&gt;&gt; [1] &quot;2.718e+00&quot; &quot;7.389e+00&quot; &quot;2.009e+01&quot;</code></pre>
-<p><br /> sprint 的第一个参数指定了一个格式化字符串，其中包括其他值的占位符。例如:%s 代 表另一个字符串，%f 和 %e 分别代表固定型格式和科学型格式的浮点数，%d 表示整数。其 他参数的值将替换占位符</p>
-<pre class="r"><code>sprintf(&quot;%s %d = %f&quot;, &quot;Euler&#39;s constant to the power&quot;, pow, powers_of_e)
-&gt;&gt; [1] &quot;Euler&#39;s constant to the power 1 = 2.718282&quot; 
-&gt;&gt; [2] &quot;Euler&#39;s constant to the power 2 = 7.389056&quot; 
-&gt;&gt; [3] &quot;Euler&#39;s constant to the power 3 = 20.085537&quot;
+format(powers_of_e, digits = 3, scientific = TRUE)
+&gt;&gt; [1] &quot;2.72e+00&quot; &quot;7.39e+00&quot; &quot;2.01e+01&quot;</code></pre>
+<p><br /> sprint 函数通过指定占位符的方式对数字进行格式化输出，其中 %s 表示字符串，%d 表示整数，%f 和 %e 分别表示可指定小数位数的浮点数和科学计数法格式的浮点数。</p>
+<pre class="r"><code>sprintf(&quot;%s %d = %f&quot;, &quot;Euler&#39;s constant to the power&quot;, 3, exp(3))
+&gt;&gt; [1] &quot;Euler&#39;s constant to the power 3 = 20.085537&quot;
 
-sprintf(&quot;To three decimal places, e ^ %d = %.3f&quot;, pow, powers_of_e)
-&gt;&gt; [1] &quot;To three decimal places, e ^ 1 = 2.718&quot; 
-&gt;&gt; [2] &quot;To three decimal places, e ^ 2 = 7.389&quot; 
-&gt;&gt; [3] &quot;To three decimal places, e ^ 3 = 20.086&quot;
+sprintf(&quot;To three decimal places, e ^ %d = %.4f&quot;, 3, exp(3))
+&gt;&gt; [1] &quot;To three decimal places, e ^ 3 = 20.0855&quot;
 
-sprintf(&quot;In scientific notation, e ^ %d = %e&quot;, pow, powers_of_e)
-&gt;&gt; [1] &quot;In scientific notation, e ^ 1 = 2.718282e+00&quot;
-&gt;&gt; [2] &quot;In scientific notation, e ^ 2 = 7.389056e+00&quot;
-&gt;&gt; [3] &quot;In scientific notation, e ^ 3 = 2.008554e+01&quot;</code></pre>
-</div>
-<div id="特殊字符" class="section level4">
-<h4>1.3 特殊字符</h4>
+sprintf(&quot;In scientific notation, e ^ %d = %e&quot;, 3, exp(3))
+&gt;&gt; [1] &quot;In scientific notation, e ^ 3 = 2.008554e+01&quot;</code></pre>
 </div>
 <div id="更改大小写" class="section level4">
-<h4>1.4 更改大小写</h4>
+<h4>1.3 更改大小写</h4>
 <p>使用 toupper 和 tolower 函数能把字符串中的字符全部转换为大写或小写：</p>
 <pre class="r"><code>toupper(&quot;I&#39;m Shouting&quot;)
 &gt;&gt; [1] &quot;I&#39;M SHOUTING&quot;
@@ -268,19 +264,133 @@ tolower(&quot;I&#39;m Whispering&quot;)
 &gt;&gt; [1] &quot;i&#39;m whispering&quot;</code></pre>
 </div>
 <div id="字符串操作" class="section level4">
-<h4>1.5 字符串操作</h4>
-</div>
-<div id="文件路径" class="section level4">
-<h4>1.6 文件路径</h4>
+<h4>1.4 字符串操作</h4>
+<p>substr(x, start, stop) 函数是截取字符串最常用的函数，可以用来截取子字符串或者替换子字符串，其中 start 表示起始的索引，stop 表示结束的索引。</p>
+<pre class="r"><code># 截取子字符串
+substr(&quot;His name is Jack&quot;, 5, 8)
+&gt;&gt; [1] &quot;name&quot;
+
+# 替换子字符串
+x &lt;- &quot;His name is Jack&quot;
+substr(x, 13, 16) &lt;- &quot;John&quot;
+x
+&gt;&gt; [1] &quot;His name is John&quot;</code></pre>
+<p><br /> strsplit 可以用来分割字符串，返回的是一个列表。</p>
+<pre class="r"><code># 按空格分割字符串
+x &lt;- &quot;His name is Jack&quot;
+strsplit(x, &quot; &quot;)
+&gt;&gt; [[1]]
+&gt;&gt; [1] &quot;His&quot;  &quot;name&quot; &quot;is&quot;   &quot;Jack&quot;</code></pre>
 </div>
 </div>
 <div id="因子" class="section level3">
 <h3>2. 因子</h3>
 <div id="创建因子" class="section level4">
 <h4>2.1 创建因子</h4>
+<p>因子是一个用于存储类别变量的特殊的变量类型，创建数据框时，R 会默认将类别变量转换为因子。</p>
+<p>除了使用数据框在内部自动创建因子之外，也可以使用 factor 函数来创建因子。</p>
+<pre class="r"><code>heights &lt;- data.frame(
+       height_cm = c(153, 181, 150, 172, 165, 149, 174, 169, 198, 163),
+       gender = c(
+         &quot;female&quot;, &quot;male&quot;, &quot;female&quot;, &quot;male&quot;, &quot;male&quot;,
+         &quot;female&quot;, &quot;female&quot;, &quot;male&quot;, &quot;male&quot;, &quot;female&quot;
+      )
+)
+
+class(heights$gender)
+&gt;&gt; [1] &quot;factor&quot;
+
+heights$gender
+&gt;&gt;  [1] female male   female male   male   female female male   male   female
+&gt;&gt; Levels: female male
+
+gender_char &lt;- c(
+       &quot;female&quot;, &quot;male&quot;, &quot;female&quot;, &quot;male&quot;, &quot;male&quot;,
+       &quot;female&quot;, &quot;female&quot;, &quot;male&quot;, &quot;male&quot;, &quot;female&quot;
+)
+(gender_fac &lt;- factor(gender_char))
+&gt;&gt;  [1] female male   female male   male   female female male   male   female
+&gt;&gt; Levels: female male</code></pre>
 </div>
-<div id="section" class="section level4">
-<h4>2.2</h4>
+<div id="更改因子水平" class="section level4">
+<h4>2.2 更改因子水平</h4>
+<p>可以通过指定 levels 参数来更改因子被创建时水平的先后顺序：</p>
+<pre class="r"><code>factor(gender_char, levels = c(&quot;male&quot;, &quot;female&quot;))
+&gt;&gt;  [1] female male   female male   male   female female male   male   female
+&gt;&gt; Levels: male female</code></pre>
+</div>
+<div id="去掉因子水平" class="section level4">
+<h4>2.3 去掉因子水平</h4>
+<p>在对数据进行处理的过程中，有时候需要去掉某些因子，如 getting_to_work 的数据框中剔除了 time_mins 字段为空的数据，但其对应的因子 bus 仍然被保留了。</p>
+<pre class="r"><code>getting_to_work &lt;- data.frame(
+       mode = c(
+         &quot;bike&quot;, &quot;car&quot;, &quot;bus&quot;, &quot;car&quot;, &quot;walk&quot;,
+         &quot;bike&quot;, &quot;car&quot;, &quot;bike&quot;, &quot;car&quot;, &quot;car&quot;
+       ),
+      time_mins = c(25, 13, NA, 22, 65, 28, 15, 24, NA, 14)
+)
+
+getting_to_work$mode
+&gt;&gt;  [1] bike car  bus  car  walk bike car  bike car  car 
+&gt;&gt; Levels: bike bus car walk
+
+# 剔除 time_mins 为空的
+getting_to_work &lt;- subset(getting_to_work, !is.na(time_mins))
+unique(getting_to_work$mode)
+&gt;&gt; [1] bike car  walk
+&gt;&gt; Levels: bike bus car walk</code></pre>
+<p><br /> 如果要删除未使用的水平因子，我们可以使用 droplevels 函数，它接受因子或是数据框作为参数，丢弃输入因子中所有未使用的水平。</p>
+<pre class="r"><code>getting_to_work &lt;- droplevels(getting_to_work)
+levels(getting_to_work$mode)
+&gt;&gt; [1] &quot;bike&quot; &quot;car&quot;  &quot;walk&quot;</code></pre>
+</div>
+<div id="有序因子" class="section level4">
+<h4>2.4 有序因子</h4>
+<p>有些因子的水平在语义上大于或小于其他水平。</p>
+<pre class="r"><code>grade_choices &lt;- c(&quot;better&quot;, &quot;good&quot;, &quot;best&quot;)
+grade_values &lt;- sample(grade_choices, 1000, replace = TRUE)
+grade_fac &lt;- factor(grade_values, grade_choices, ordered = )
+head(grade_fac)
+&gt;&gt; [1] best   good   good   better better better
+&gt;&gt; Levels: better good best
+table(grade_fac)
+&gt;&gt; grade_fac
+&gt;&gt; better   good   best 
+&gt;&gt;    315    334    351</code></pre>
+</div>
+<div id="连续变量转化为因子" class="section level4">
+<h4>2.5 连续变量转化为因子</h4>
+<p>cut 函数能将数值变量切成不同的组，然后返回一个因子。我们随机地生成 10000 名工人的年龄数据(从 16 到 66，使用 Beta 分布)，并将他们按每 10 年分组：</p>
+<pre class="r"><code>ages &lt;- 16 + 50 * rbeta(10000, 2, 3)
+grouped_ages &lt;- cut(ages, seq.int(16, 66, 10))
+head(grouped_ages)
+&gt;&gt; [1] (36,46] (26,36] (36,46] (36,46] (26,36] (46,56]
+&gt;&gt; Levels: (16,26] (26,36] (36,46] (46,56] (56,66]
+table(grouped_ages)
+&gt;&gt; grouped_ages
+&gt;&gt; (16,26] (26,36] (36,46] (46,56] (56,66] 
+&gt;&gt;    1822    3500    2901    1501     276</code></pre>
+</div>
+<div id="生成和合并因子" class="section level4">
+<h4>2.6 生成和合并因子</h4>
+<p>可以使用 gl 函数来生成因子，其中第一个参数为要生成的因子的水平数，第二个为每个水平需要重复的次数，第三个为因子的长度。</p>
+<pre class="r"><code>gl(3, 2)
+&gt;&gt; [1] 1 1 2 2 3 3
+&gt;&gt; Levels: 1 2 3
+
+gl(3, 2, labels = c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;))
+&gt;&gt; [1] A A B B C C
+&gt;&gt; Levels: A B C
+
+gl(3, 1, 6, labels = c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;))
+&gt;&gt; [1] A B C A B C
+&gt;&gt; Levels: A B C</code></pre>
+<p><br /> 如果有多个类别变量，有时把它们合并成一个单一的因子是有用的，其中每个水平由各个变量之间的交叉合并组成，可以使用 interaction 函数：</p>
+<pre class="r"><code>grade &lt;- gl(3, 2, labels = c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;))
+gender &lt;- gl(2, 1, 6, labels = c(&quot;female&quot;, &quot;male&quot;))
+interaction(grade, gender)
+&gt;&gt; [1] A.female A.male   B.female B.male   C.female C.male  
+&gt;&gt; Levels: A.female B.female C.female A.male B.male C.male</code></pre>
 </div>
 </div>
 

@@ -5,16 +5,16 @@ date: "3/3/2021"
 output: html_document
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, comment = ">>", collapse = TRUE)
-```
+
 
 ### 1. 字符串
 #### 1.1 创建和输出字符串
 字符向量可用 c 函数创建，可以用单引号或双引号把字符串引用起来，只要引号之间匹配即可，推荐使用双引号：
 
-```{r}
+
+```r
 c("learn", "character", "and", "factor", "of", "r")
+>> [1] "learn"     "character" "and"       "factor"    "of"        "r"
 ```
 
 <br />
@@ -22,84 +22,112 @@ paste 函数能将不同字符串组合在一起，默认分隔符为空格，�
 
 所有的字符串被组合后，可使用 collapse 参数把结果收缩成一个包含所有元素的字符串。
 
-```{r}
+
+```r
 paste("red", "yellow")
+>> [1] "red yellow"
 
 paste(c("red", "yellow"), "lorry")
+>> [1] "red lorry"    "yellow lorry"
 
 paste(c("red", "yellow"), "lorry", sep = "-")
+>> [1] "red-lorry"    "yellow-lorry"
 
 paste("a", 1:5, sep = "")
+>> [1] "a1" "a2" "a3" "a4" "a5"
 
 paste("a", 1:5, sep = "", collapse = "+")
+>> [1] "a1+a2+a3+a4+a5"
 ```
 
 <br />
 toString 函数是 paste 的变种，它在输出向量时，会使用逗号和空格分隔每个元素，同时可以限制输出的字符长度，如 width = 40 将输出 40 个字符：
 
-```{r}
+
+```r
 x <- (1:15) ^ 2
 toString(x)
+>> [1] "1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225"
 
 toString(x, width = 40)
+>> [1] "1, 4, 9, 16, 25, 36, 49, 64, 81, 100...."
 ```
 
 #### 1.2 格式化数字
 format 函数可用于数字的格式化，包括指定小数的位数、输出的宽度、是否使用科学计数法等，传入的参数是数值型的向量，输出则是字符串向量：
 
-```{r}
+
+```r
 pow <- 1:3
 (powers_of_e <- exp(pow))
+>> [1]  2.718282  7.389056 20.085537
 
 format(powers_of_e)
+>> [1] " 2.718282" " 7.389056" "20.085537"
 
 format(powers_of_e, digits = 3)
+>> [1] " 2.72" " 7.39" "20.09"
 
 format(powers_of_e, digits = 3, width = 10) 
+>> [1] "      2.72" "      7.39" "     20.09"
 
 format(powers_of_e, digits = 3, scientific = TRUE)
+>> [1] "2.72e+00" "7.39e+00" "2.01e+01"
 ```
 
 <br />
 sprint 函数通过指定占位符的方式对数字进行格式化输出，其中 %s 表示字符串，%d 表示整数，%f 和 %e 分别表示可指定小数位数的浮点数和科学计数法格式的浮点数。
 
-```{r}
+
+```r
 sprintf("%s %d = %f", "Euler's constant to the power", 3, exp(3))
+>> [1] "Euler's constant to the power 3 = 20.085537"
 
 sprintf("To three decimal places, e ^ %d = %.4f", 3, exp(3))
+>> [1] "To three decimal places, e ^ 3 = 20.0855"
 
 sprintf("In scientific notation, e ^ %d = %e", 3, exp(3))
+>> [1] "In scientific notation, e ^ 3 = 2.008554e+01"
 ```
 
 #### 1.3 更改大小写
 使用 toupper 和 tolower 函数能把字符串中的字符全部转换为大写或小写：
 
-```{r}
+
+```r
 toupper("I'm Shouting")
+>> [1] "I'M SHOUTING"
 
 tolower("I'm Whispering")
+>> [1] "i'm whispering"
 ```
 
 #### 1.4 字符串操作
 substr(x, start, stop) 函数是截取字符串最常用的函数，可以用来截取子字符串或者替换子字符串，其中 start 表示起始的索引，stop 表示结束的索引。
 
-```{r}
+
+```r
 # 截取子字符串
 substr("His name is Jack", 5, 8)
+>> [1] "name"
 
 # 替换子字符串
 x <- "His name is Jack"
 substr(x, 13, 16) <- "John"
 x
+>> [1] "His name is John"
 ```
 
 <br />
 strsplit 可以用来分割字符串，返回的是一个列表。
 
-```{r}
+
+```r
 # 按空格分割字符串
 x <- "His name is Jack"
 strsplit(x, " ")
+>> [[1]]
+>> [1] "His"  "name" "is"   "Jack"
 ```
 
 ### 2. 因子
@@ -108,7 +136,8 @@ strsplit(x, " ")
 
 除了使用数据框在内部自动创建因子之外，也可以使用 factor 函数来创建因子。
 
-```{r}
+
+```r
 heights <- data.frame(
        height_cm = c(153, 181, 150, 172, 165, 149, 174, 169, 198, 163),
        gender = c(
@@ -118,27 +147,36 @@ heights <- data.frame(
 )
 
 class(heights$gender)
+>> [1] "factor"
 
 heights$gender
+>>  [1] female male   female male   male   female female male   male   female
+>> Levels: female male
 
 gender_char <- c(
        "female", "male", "female", "male", "male",
        "female", "female", "male", "male", "female"
 )
 (gender_fac <- factor(gender_char))
+>>  [1] female male   female male   male   female female male   male   female
+>> Levels: female male
 ```
 
 #### 2.2 更改因子水平
 可以通过指定 levels 参数来更改因子被创建时水平的先后顺序：
 
-```{r}
+
+```r
 factor(gender_char, levels = c("male", "female"))
+>>  [1] female male   female male   male   female female male   male   female
+>> Levels: male female
 ```
 
 #### 2.3 去掉因子水平
 在对数据进行处理的过程中，有时候需要去掉某些因子，如 getting_to_work 的数据框中剔除了 time_mins 字段为空的数据，但其对应的因子 bus 仍然被保留了。
 
-```{r}
+
+```r
 getting_to_work <- data.frame(
        mode = c(
          "bike", "car", "bus", "car", "walk",
@@ -148,59 +186,87 @@ getting_to_work <- data.frame(
 )
 
 getting_to_work$mode
+>>  [1] bike car  bus  car  walk bike car  bike car  car 
+>> Levels: bike bus car walk
 
 # 剔除 time_mins 为空的
 getting_to_work <- subset(getting_to_work, !is.na(time_mins))
 unique(getting_to_work$mode)
+>> [1] bike car  walk
+>> Levels: bike bus car walk
 ```
 
 <br />
 如果要删除未使用的水平因子，我们可以使用 droplevels 函数，它接受因子或是数据框作为参数，丢弃输入因子中所有未使用的水平。
 
-```{r}
+
+```r
 getting_to_work <- droplevels(getting_to_work)
 levels(getting_to_work$mode)
+>> [1] "bike" "car"  "walk"
 ```
 
 #### 2.4 有序因子
 有些因子的水平在语义上大于或小于其他水平，这时可以使用有序因子，创建时指定参数 ordered = TRUE。
 
-```{r}
+
+```r
 # 考试成绩 good < better < best
 grade_choices <- c("good", "better", "best")
 grade_values <- sample(grade_choices, 1000, replace = TRUE)
 grade_fac <- factor(grade_values, grade_choices, ordered = TRUE)
 head(grade_fac)
+>> [1] best good good best best good
+>> Levels: good < better < best
 table(grade_fac)
+>> grade_fac
+>>   good better   best 
+>>    363    293    344
 ```
 
 #### 2.5 连续变量转化为因子
 cut 函数能将数值变量切成不同的组，然后返回一个因子。我们随机地生成 10000 名工人的年龄数据(从 16 到 66，使用 Beta 分布)，并将他们按每 10 年分组：
 
-```{r}
+
+```r
 ages <- 16 + 50 * rbeta(10000, 2, 3)
 grouped_ages <- cut(ages, seq.int(16, 66, 10))
 head(grouped_ages)
+>> [1] (36,46] (56,66] (46,56] (16,26] (26,36] (26,36]
+>> Levels: (16,26] (26,36] (36,46] (46,56] (56,66]
 table(grouped_ages)
+>> grouped_ages
+>> (16,26] (26,36] (36,46] (46,56] (56,66] 
+>>    1788    3463    2960    1513     276
 ```
 
 #### 2.6 生成和合并因子
 可以使用 gl 函数来生成因子，其中第一个参数为要生成的因子的水平数，第二个为每个水平需要重复的次数，第三个为因子的长度。
 
-```{r}
+
+```r
 gl(3, 2)
+>> [1] 1 1 2 2 3 3
+>> Levels: 1 2 3
 
 gl(3, 2, labels = c("A", "B", "C"))
+>> [1] A A B B C C
+>> Levels: A B C
 
 gl(3, 1, 6, labels = c("A", "B", "C"))
+>> [1] A B C A B C
+>> Levels: A B C
 ```
 
 <br />
 如果有多个类别变量，有时把它们合并成一个单一的因子是有用的，其中每个水平由各个变量之间的交叉合并组成，可以使用 interaction 函数：
 
-```{r}
+
+```r
 grade <- gl(3, 2, labels = c("A", "B", "C"))
 gender <- gl(2, 1, 6, labels = c("female", "male"))
 interaction(grade, gender)
+>> [1] A.female A.male   B.female B.male   C.female C.male  
+>> Levels: A.female B.female C.female A.male B.male C.male
 ```
 
